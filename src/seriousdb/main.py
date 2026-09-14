@@ -30,10 +30,10 @@ def put(
     background_tasks: BackgroundTasks,
     cache: Annotated[Cache, Depends(get_cache)],
 ):
-    value = parse_value(value)
-    cache.insert(key, value)
+    parsed_value = parse_value(value)
+    cache.insert(key, parsed_value)
     background_tasks.add_task(cache.flush)
-    return value
+    return parsed_value
 
 
 @app.get("/db")
