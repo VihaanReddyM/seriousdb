@@ -5,6 +5,7 @@ from fastapi import BackgroundTasks, Depends, FastAPI
 
 from .cache import Cache
 from .config import DB_FILE
+from .parser import parse_value
 
 cache = Cache()
 
@@ -29,6 +30,7 @@ def put(
     background_tasks: BackgroundTasks,
     cache: Annotated[Cache, Depends(get_cache)],
 ):
+    value = parse_value(value)
     cache.insert(key, value)
     background_tasks.add_task(cache.flush)
     return value
