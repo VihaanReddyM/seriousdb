@@ -24,7 +24,7 @@ def get_cache() -> Cache:
     return cache
 
 
-@app.put("/db")
+@app.put("/db", response_model=None)
 def put(
     key: Annotated[str, Query(min_length=1)],
     value: str,
@@ -37,12 +37,12 @@ def put(
     return parsed_value
 
 
-@app.get("/db")
+@app.get("/db", response_model=None)
 def get(key: str, cache: Annotated[Cache, Depends(get_cache)]) -> JsonValue:
     return cache.select(key)
 
 
-@app.head("/db")
+@app.head("/db", response_model=None)
 async def head(key: str, cache: Annotated[Cache, Depends(get_cache)]) -> JsonValue:
     return cache.select(key)
 
