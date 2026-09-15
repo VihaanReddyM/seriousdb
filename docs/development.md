@@ -51,7 +51,13 @@ The server is available at `http://127.0.0.1:8000` and its interactive API docum
 Format Python files with `ruff`:
 
 ```bash
-uv tool run ruff format .
+uv run ruff format .
+```
+
+To check formatting without changing files:
+
+```bash
+uv run ruff format --check .
 ```
 
 ### Nix in Nix develop
