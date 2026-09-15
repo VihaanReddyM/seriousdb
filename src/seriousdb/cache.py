@@ -62,7 +62,7 @@ class Cache:
 
             return self.db.pop(key)
 
-    def load(self, filename: str):
+    def load(self, filename: str) -> None:
         with self.lock:
             if not os.path.isfile(filename):
                 self.db = _write_default(filename)
@@ -82,7 +82,7 @@ class Cache:
                     self.db = _write_default(filename)
             self.filename = filename
 
-    def flush(self):
+    def flush(self) -> None:
         with self.lock:
             if self.db is None or self.filename is None:
                 return
