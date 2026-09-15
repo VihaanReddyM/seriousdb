@@ -38,17 +38,17 @@ def put(
 
 
 @app.get("/db")
-def get(key: str, cache: Annotated[Cache, Depends(get_cache)]) -> str:
+def get(key: str, cache: Annotated[Cache, Depends(get_cache)]) -> JsonValue:
     return cache.select(key)
 
 
 @app.head("/db")
-async def head(key: str, cache: Annotated[Cache, Depends(get_cache)]) -> str:
+async def head(key: str, cache: Annotated[Cache, Depends(get_cache)]) -> JsonValue:
     return cache.select(key)
 
 
 @app.get("/db/all")
-def get_all(cache: Annotated[Cache, Depends(get_cache)]) -> dict[str, str]:
+def get_all(cache: Annotated[Cache, Depends(get_cache)]) -> dict[str, JsonValue]:
     with cache.lock:
         if cache.db is None:
             raise HTTPException(
