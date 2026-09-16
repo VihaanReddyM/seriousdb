@@ -4,8 +4,9 @@ from typing import Annotated
 
 from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Query
 
-from .cache import Cache, JsonValue
+from .cache import Cache, JsonValue, require_db
 from .config import DB_FILE
+from .error_handlers import register_exception_handlers
 from .parser import parse_value
 
 cache = Cache()
@@ -18,6 +19,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
 
 app = FastAPI(lifespan=lifespan)
+register_exception_handlers(app)
 
 
 def get_cache() -> Cache:
@@ -50,12 +52,7 @@ async def head(key: str, cache: Annotated[Cache, Depends(get_cache)]) -> JsonVal
 @app.get("/db/all")
 def get_all(cache: Annotated[Cache, Depends(get_cache)]) -> dict[str, JsonValue]:
     with cache.lock:
-        if cache.db is None:
-            raise HTTPException(
-                status_code=500,
-                detail=f"Database file {cache.filename} could not be opened and loaded",
-            )
-        return cache.db.copy()
+        return require_db(cache).copy()
 
 
 @app.delete("/db")
@@ -67,3 +64,10 @@ def delete(
     value = cache.delete(key)
     background_tasks.add_task(cache.flush)
     return value
+
+
+@app.get("/health")
+def health(cache: Annotated[Cache, Depends(get_cache)]):
+    if cache.db is None:
+        raise HTTPException(status_code=503, detail="Service unavailable")
+    return {"status": "ok"}
