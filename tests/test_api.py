@@ -235,3 +235,14 @@ def test_count_includes_default_key(client):
 
     assert response.status_code == 200
     assert response.json() == 1
+
+
+def test_count_is_zero_after_removing_default_key(client):
+    response = client.delete("/db", params={"key": "default"})
+
+    assert response.status_code == 200
+
+    response = client.get("/db/count")
+
+    assert response.status_code == 200
+    assert response.json() == 0
