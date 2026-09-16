@@ -30,7 +30,7 @@ class Cache:
     def select(self, key: str) -> JsonValue:
         with self.lock:
             db = require_db(self)
-            
+
             if key not in db:
                 raise ResourceNotFoundError(f"No value set for key {key}")
 

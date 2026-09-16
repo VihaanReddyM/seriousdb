@@ -49,13 +49,13 @@ async def head(key: str, cache: Annotated[Cache, Depends(get_cache)]) -> JsonVal
     return cache.select(key)
 
 
-@app.get("/db/all")
+@app.get("/db/all", response_model=None)
 def get_all(cache: Annotated[Cache, Depends(get_cache)]) -> dict[str, JsonValue]:
     with cache.lock:
         return require_db(cache).copy()
 
 
-@app.delete("/db")
+@app.delete("/db", response_model=None)
 def delete(
     key: str,
     background_tasks: BackgroundTasks,

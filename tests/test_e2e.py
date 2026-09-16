@@ -73,7 +73,7 @@ class DocumentedApiTests(unittest.TestCase):
 
         on_disk = json.loads(Path(main.DB_FILE).read_text())
         self.assertEqual(on_disk["name"], "Alice")
-        
+
     def test_delete_existing_key_removes_it(self):
         put_response = self.client.put("/db", params={"key": "name", "value": "Alice"})
         self.assertEqual(put_response.status_code, 200)
