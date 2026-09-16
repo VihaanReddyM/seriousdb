@@ -73,7 +73,7 @@ class DocumentedApiTests(unittest.TestCase):
 
         on_disk = json.loads(Path(main.DB_FILE).read_text())
         self.assertEqual(on_disk["name"], "Alice")
-        
+
     def test_delete_existing_key_removes_it(self):
         put_response = self.client.put("/db", params={"key": "name", "value": "Alice"})
         self.assertEqual(put_response.status_code, 200)
@@ -87,6 +87,15 @@ class DocumentedApiTests(unittest.TestCase):
     def test_delete_missing_key_returns_404(self):
         response = self.client.delete("/db", params={"key": "does-not-exist"})
         self.assertEqual(response.status_code, 404)
+
+    def test_count_returns_number_of_key_value_pairs(self):
+        self.client.put("/db", params={"key": "name", "value": "Alice"})
+        self.client.put("/db", params={"key": "language", "value": "Python"})
+
+        response = self.client.get("/db/count")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), 3)
 
 
 if __name__ == "__main__":

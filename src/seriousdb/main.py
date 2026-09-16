@@ -53,6 +53,12 @@ def get_all(cache: Annotated[Cache, Depends(get_cache)]) -> dict[str, str]:
         return require_db(cache).copy()
 
 
+@app.get("/db/count")
+def count(cache: Annotated[Cache, Depends(get_cache)]):
+    with cache.lock:
+        return len(require_db(cache).copy())
+
+
 @app.delete("/db")
 def delete(
     key: str,

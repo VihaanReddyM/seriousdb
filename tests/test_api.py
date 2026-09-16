@@ -211,3 +211,27 @@ def test_concurrent_put_and_delete_requests(client):
     for number in range(10):
         assert f"delete_{number}" not in db
         assert db[f"put_{number}"] == f"value_{number}"
+
+
+def test_count_returns_number_of_key_value_pairs(client):
+    client.put(
+        "/db",
+        params={"key": "name", "value": "Alice"},
+    )
+
+    client.put(
+        "/db",
+        params={"key": "language", "value": "Python"},
+    )
+
+    response = client.get("/db/count")
+
+    assert response.status_code == 200
+    assert response.json() == 3
+
+
+def test_count_includes_default_key(client):
+    response = client.get("/db/count")
+
+    assert response.status_code == 200
+    assert response.json() == 1
