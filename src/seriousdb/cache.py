@@ -10,7 +10,7 @@ import logging
 import os
 import time
 from threading import Lock
-from typing import TypeAlias
+from typing import Any, TypeAlias
 
 from .exceptions import ResourceNotFoundError, ServiceUnavailableError
 
@@ -18,9 +18,7 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_DB = {}
 
-JsonValue: TypeAlias = (
-    str | int | float | bool | None | list["JsonValue"] | dict[str, "JsonValue"]
-)
+JsonValue: TypeAlias = str | int | float | bool | None | list[Any] | dict[str, Any]
 
 
 class Cache:

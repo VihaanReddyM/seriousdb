@@ -73,9 +73,7 @@ def put(
     parsed_value = parse_value(value)
     stored_value, is_new_key = cache.insert(key, parsed_value)
 
-    response.status_code = (
-        status.HTTP_201_CREATED if is_new_key else status.HTTP_200_OK
-    )
+    response.status_code = status.HTTP_201_CREATED if is_new_key else status.HTTP_200_OK
 
     background_tasks.add_task(cache.flush)
     return stored_value
